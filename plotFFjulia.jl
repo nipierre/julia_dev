@@ -1,11 +1,16 @@
-Pkg.add("Gadfly")
-Pkg.add("Glob")
-Pkg.add("DataFrames")
-Pkg.add("Formatting")
+#Pkg.update()
+#Pkg.add("Gadfly")
+#Pkg.add("Glob")
+#Pkg.add("DataFrames")
+#Pkg.add("Formatting")
+#Pkg.add("Cairo")
+#Pkg.add("Fontconfig")
 using Gadfly
 using Glob
 using DataFrames
 using Formatting
+using Cairo
+#using Fontconfig
 
 xlim = [0.2, 0.85]
 font = 132
@@ -171,3 +176,34 @@ function get_particles_FF_index(p, FF)
                "K_diff_cs"=>["fav", "unf"])
     return FFs[p].index(FF)
 end
+
+function make_graph(z, m, color, alpha=0.3, line_width=3)
+    #=
+    Creates a TGraph
+    =#
+    if !all(i->(i>0),m) || !all(i->(i>0),z)
+      return Nothing
+    end
+
+    #m = [m]
+    #z = [z]
+    len = length(z)
+    if len == 0
+      return Nothing
+    end
+    #plot(z=z, m=m)
+    h = plot(z=z, m=m)
+    #=h.SetName('h{}'.format(unique()))
+    h.SetMarkerColor(color)
+    h.SetMarkerStyle(20)
+    h.SetMarkerSize(0)
+    h.SetLineColor(color)
+    h.SetLineWidth(line_width)
+    h.SetFillColorAlpha(color, alpha) # otherwise legend has black filling=#
+    return h
+end
+
+z = [0.2,0.3,0.4,0.5,0.6,0.7]
+m = [0.1,0.4,1.2,0.2,1.0,0.8]
+p = make_graph(z,m,0)
+#draw(SVG("myplot.png",15cm,9cm),p)
